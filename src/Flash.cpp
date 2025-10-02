@@ -3,7 +3,7 @@
 
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/desktop/Window.hpp>
-#include <hyprland/src/managers/AnimationManager.hpp>
+#include <hyprland/src/managers/animation/AnimationManager.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
 
 void CFlash::init(HANDLE pHandle, std::string animationName) {
@@ -33,17 +33,18 @@ void CFlash::onWindowFocus(PHLWINDOW pWindow, HANDLE pHandle) {
   static const auto *flash_opacity =
       (Hyprlang::FLOAT *const *)(getConfigValue(pHandle, "flash_opacity")
                                      ->getDataStaticPtr());
-  pWindow->m_fAlpha = **flash_opacity;
-  // pWindow->m_fAlpha = g_fFlashOpacity;
-  pWindow->m_fAlpha.setConfig(&m_sFocusInAnimConfig);
-  pWindow->m_fAlpha.setCallbackOnEnd([this, pWindow, pHandle](void *) {
+  
+  // Set the window opacity to flash value
+  pWindow->m_alpha->setValueAndWarp(**flash_opacity);
+  pWindow->m_alpha->setConfig(m_sFocusInAnimConfig);
+  
+  pWindow->m_alpha->setCallbackOnEnd([this, pWindow, pHandle](Hyprutils::Memory::CWeakPointer<Hyprutils::Animation::CBaseAnimatedVariable> pAnim) {
     static const auto *active_opacity =
         (Hyprlang::FLOAT *const *)(HyprlandAPI::getConfigValue(
                                        pHandle, "decoration:active_opacity")
                                        ->getDataStaticPtr());
     // Make sure we restore to the active window opacity
-    pWindow->m_fAlpha = **active_opacity;
-    // pWindow->m_fAlpha = g_fActiveOpacity;
-    pWindow->m_fAlpha.setConfig(&m_sFocusOutAnimConfig);
+    pWindow->m_alpha->setValueAndWarp(**active_opacity);
+    pWindow->m_alpha->setConfig(m_sFocusOutAnimConfig);
   });
 }

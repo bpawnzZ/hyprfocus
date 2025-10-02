@@ -4,6 +4,9 @@
 #define WLR_USE_UNSTABLE
 
 #include <hyprland/src/config/ConfigManager.hpp>
+#include <hyprland/src/managers/animation/AnimationManager.hpp>
+
+using SAnimationPropertyConfig = Hyprutils::Animation::SAnimationPropertyConfig;
 
 class IFocusAnimation {
 public:
@@ -16,8 +19,8 @@ public:
   Hyprlang::CConfigValue *getConfigValue(HANDLE pHandle, std::string name);
 
 public:
-  SAnimationPropertyConfig m_sFocusInAnimConfig;
-  SAnimationPropertyConfig m_sFocusOutAnimConfig;
+  SP<SAnimationPropertyConfig> m_sFocusInAnimConfig;
+  SP<SAnimationPropertyConfig> m_sFocusOutAnimConfig;
 
   std::string m_szAnimationName;
 

@@ -9,7 +9,7 @@
 
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/desktop/Window.hpp>
-#include <hyprland/src/managers/AnimationManager.hpp>
+#include <hyprland/src/managers/animation/AnimationManager.hpp>
 
 #include "Flash.hpp"
 #include "Shrink.hpp"
@@ -117,7 +117,7 @@ static void onActiveWindowChange(void *self, std::any data) {
       return;
     }
 
-    if (PWINDOW->m_bIsFloating && !**PANIMATEFLOATING) {
+    if (PWINDOW->m_isFloating && !**PANIMATEFLOATING) {
       hyprfocus_log(LOG, "Floating window, not animating");
       g_pPreviouslyFocusedWindow = PWINDOW;
       return;
@@ -181,7 +181,7 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   }
 
   HyprlandAPI::reloadConfig();
-  g_pConfigManager->tick();
+  // g_pConfigManager->tick();
   hyprfocus_log(LOG, "Reloaded config");
 
   // Register callbacks
